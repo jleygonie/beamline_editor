@@ -1,0 +1,2634 @@
+{
+  "format": "beamline-layout",
+  "version": 1,
+  "units": "m",
+  "origin": {
+    "x": 0.0,
+    "y": 0.0,
+    "angle": 0.0
+  },
+  "apertures": [],
+  "survey": {
+    "header_lines": [
+      "@ NAME             %06s \"SURVEY\"",
+      "@ TYPE             %06s \"SURVEY\"",
+      "@ TITLE            %08s \"no-title\"",
+      "@ ORIGIN           %17s \"5.08.01 Darwin 64\"",
+      "@ DATE             %08s \"20/02/26\"",
+      "@ TIME             %08s \"12.02.11\""
+    ],
+    "columns_line": "* NAME               KEYWORD            S L ANGLE ",
+    "formats_line": "$ %s                 %s                 %le %le %le ",
+    "value_column": 41,
+    "trailing_newline": false
+  },
+  "elements": [
+    {
+      "name": "CA.LINAC$START",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 0.0,
+      "s_center": 0.0,
+      "s_end": 0.0,
+      "angle": 0.0,
+      "upstream": null,
+      "downstream": {
+        "name": "CA.CANON.1.S",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.CANON.1.S",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 0.0,
+      "s_center": 0.0,
+      "s_end": 0.0,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.LINAC$START",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "downstream": {
+        "name": "CA.CANON.1.E",
+        "edge_gap": 1e-05,
+        "center_gap": 1e-05
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0000",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 1e-05,
+      "s_start": 0.0,
+      "s_center": 5e-06,
+      "s_end": 1e-05,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.CANON.1.E",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 1e-05,
+      "s_center": 1e-05,
+      "s_end": 1e-05,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.CANON.1.S",
+        "edge_gap": 1e-05,
+        "center_gap": 1e-05
+      },
+      "downstream": {
+        "name": "CA.DHG0130",
+        "edge_gap": 0.24449,
+        "center_gap": 0.31699
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0001",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.24449,
+      "s_start": 1e-05,
+      "s_center": 0.122255,
+      "s_end": 0.2445,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0130",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 0.2445,
+      "s_center": 0.317,
+      "s_end": 0.3895,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.CANON.1.E",
+        "edge_gap": 0.24449,
+        "center_gap": 0.31699
+      },
+      "downstream": {
+        "name": "CA.LAS0205",
+        "edge_gap": 1.1101,
+        "center_gap": 1.1826
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0002",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 1.1101,
+      "s_start": 0.3895,
+      "s_center": 0.94455,
+      "s_end": 1.4996,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.LAS0205",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 1.4996,
+      "s_center": 1.4996,
+      "s_end": 1.4996,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0130",
+        "edge_gap": 1.1101,
+        "center_gap": 1.1826
+      },
+      "downstream": {
+        "name": "CA.ICT0210",
+        "edge_gap": 0.1404,
+        "center_gap": 0.1404
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0003",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1404,
+      "s_start": 1.4996,
+      "s_center": 1.5698,
+      "s_end": 1.64,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ICT0210",
+      "type": "current_monitor",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 1.64,
+      "s_center": 1.64,
+      "s_end": 1.64,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.LAS0205",
+        "edge_gap": 0.1404,
+        "center_gap": 0.1404
+      },
+      "downstream": {
+        "name": "CA.BTV0215",
+        "edge_gap": 0.1695,
+        "center_gap": 0.1695
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0004",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1695,
+      "s_start": 1.64,
+      "s_center": 1.72475,
+      "s_end": 1.8095,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0215",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 1.8095,
+      "s_center": 1.8095,
+      "s_end": 1.8095,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.ICT0210",
+        "edge_gap": 0.1695,
+        "center_gap": 0.1695
+      },
+      "downstream": {
+        "name": "CA.BPC0220",
+        "edge_gap": 0.2475,
+        "center_gap": 0.2475
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0005",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.2475,
+      "s_start": 1.8095,
+      "s_center": 1.93325,
+      "s_end": 2.057,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPC0220",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 2.057,
+      "s_center": 2.057,
+      "s_end": 2.057,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0215",
+        "edge_gap": 0.2475,
+        "center_gap": 0.2475
+      },
+      "downstream": {
+        "name": "CA.DHG0225",
+        "edge_gap": 0.047,
+        "center_gap": 0.1195
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0006",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.047,
+      "s_start": 2.057,
+      "s_center": 2.0805,
+      "s_end": 2.104,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0225",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 2.104,
+      "s_center": 2.1765,
+      "s_end": 2.249,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPC0220",
+        "edge_gap": 0.047,
+        "center_gap": 0.1195
+      },
+      "downstream": {
+        "name": "CA.ACS0230E",
+        "edge_gap": 0.1014,
+        "center_gap": 0.1739
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0007",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1014,
+      "s_start": 2.249,
+      "s_center": 2.2997,
+      "s_end": 2.3504,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0230E",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 2.3504,
+      "s_center": 2.3504,
+      "s_end": 2.3504,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0225",
+        "edge_gap": 0.1014,
+        "center_gap": 0.1739
+      },
+      "downstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 4.8652,
+        "center_gap": 4.8652
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHB0230",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.0,
+      "s_start": 2.3504,
+      "s_center": 2.3504,
+      "s_end": 2.3504,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0225",
+        "edge_gap": 0.1014,
+        "center_gap": 0.1739
+      },
+      "downstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 4.8652,
+        "center_gap": 4.8652
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0230",
+      "type": "rf_structure",
+      "keyword": "DRIFT",
+      "length": 4.572,
+      "s_start": 2.3504,
+      "s_center": 4.6364,
+      "s_end": 6.9224,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0225",
+        "edge_gap": 0.1014,
+        "center_gap": 2.4599
+      },
+      "downstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 0.2932,
+        "center_gap": 2.5792
+      },
+      "params": {
+        "frequency": 0.0,
+        "gradient": 0.0,
+        "phase": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0230S",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 6.9224,
+      "s_center": 6.9224,
+      "s_end": 6.9224,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0225",
+        "edge_gap": 4.6734,
+        "center_gap": 4.7459
+      },
+      "downstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 0.2932,
+        "center_gap": 0.2932
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0008",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.2932,
+      "s_start": 6.9224,
+      "s_center": 7.069,
+      "s_end": 7.2156,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0235",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 7.2156,
+      "s_center": 7.2156,
+      "s_end": 7.2156,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.ACS0230S",
+        "edge_gap": 0.2932,
+        "center_gap": 0.2932
+      },
+      "downstream": {
+        "name": "CA.BPC0240",
+        "edge_gap": 0.044,
+        "center_gap": 0.044
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0009",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.044,
+      "s_start": 7.2156,
+      "s_center": 7.2376,
+      "s_end": 7.2596,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPC0240",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 7.2596,
+      "s_center": 7.2596,
+      "s_end": 7.2596,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 0.044,
+        "center_gap": 0.044
+      },
+      "downstream": {
+        "name": "CA.ACS0250E",
+        "edge_gap": 0.2495,
+        "center_gap": 0.2495
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0245",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 7.2596,
+      "s_center": 7.3321,
+      "s_end": 7.4046,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0235",
+        "edge_gap": 0.044,
+        "center_gap": 0.1165
+      },
+      "downstream": {
+        "name": "CA.ACS0250E",
+        "edge_gap": 0.1045,
+        "center_gap": 0.177
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0010",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1045,
+      "s_start": 7.4046,
+      "s_center": 7.45685,
+      "s_end": 7.5091,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0250E",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 7.5091,
+      "s_center": 7.5091,
+      "s_end": 7.5091,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0245",
+        "edge_gap": 0.1045,
+        "center_gap": 0.177
+      },
+      "downstream": {
+        "name": "CA.BPC0260",
+        "edge_gap": 4.8653,
+        "center_gap": 4.8653
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0250",
+      "type": "rf_structure",
+      "keyword": "DRIFT",
+      "length": 4.572,
+      "s_start": 7.5091,
+      "s_center": 9.7951,
+      "s_end": 12.0811,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0245",
+        "edge_gap": 0.1045,
+        "center_gap": 2.463
+      },
+      "downstream": {
+        "name": "CA.BPC0260",
+        "edge_gap": 0.2933,
+        "center_gap": 2.5793
+      },
+      "params": {
+        "frequency": 0.0,
+        "gradient": 0.0,
+        "phase": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0250S",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 12.0811,
+      "s_center": 12.0811,
+      "s_end": 12.0811,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0245",
+        "edge_gap": 4.6765,
+        "center_gap": 4.749
+      },
+      "downstream": {
+        "name": "CA.BPC0260",
+        "edge_gap": 0.2933,
+        "center_gap": 0.2933
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0011",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.2933,
+      "s_start": 12.0811,
+      "s_center": 12.22775,
+      "s_end": 12.3744,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPC0260",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 12.3744,
+      "s_center": 12.3744,
+      "s_end": 12.3744,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.ACS0250S",
+        "edge_gap": 0.2933,
+        "center_gap": 0.2933
+      },
+      "downstream": {
+        "name": "CA.DHG0265",
+        "edge_gap": 0.044,
+        "center_gap": 0.1165
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0012",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.044,
+      "s_start": 12.3744,
+      "s_center": 12.3964,
+      "s_end": 12.4184,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0265",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 12.4184,
+      "s_center": 12.4909,
+      "s_end": 12.5634,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPC0260",
+        "edge_gap": 0.044,
+        "center_gap": 0.1165
+      },
+      "downstream": {
+        "name": "CA.ACS0270E",
+        "edge_gap": 0.1045,
+        "center_gap": 0.177
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0013",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1045,
+      "s_start": 12.5634,
+      "s_center": 12.61565,
+      "s_end": 12.6679,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0270E",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 12.6679,
+      "s_center": 12.6679,
+      "s_end": 12.6679,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0265",
+        "edge_gap": 0.1045,
+        "center_gap": 0.177
+      },
+      "downstream": {
+        "name": "CA.BPC0310",
+        "edge_gap": 4.8985,
+        "center_gap": 4.8985
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0270",
+      "type": "rf_structure",
+      "keyword": "DRIFT",
+      "length": 4.572,
+      "s_start": 12.6679,
+      "s_center": 14.9539,
+      "s_end": 17.2399,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0265",
+        "edge_gap": 0.1045,
+        "center_gap": 2.463
+      },
+      "downstream": {
+        "name": "CA.BPC0310",
+        "edge_gap": 0.3265,
+        "center_gap": 2.6125
+      },
+      "params": {
+        "frequency": 0.0,
+        "gradient": 0.0,
+        "phase": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ACS0270S",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 17.2399,
+      "s_center": 17.2399,
+      "s_end": 17.2399,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0265",
+        "edge_gap": 4.6765,
+        "center_gap": 4.749
+      },
+      "downstream": {
+        "name": "CA.BPC0310",
+        "edge_gap": 0.3265,
+        "center_gap": 0.3265
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0014",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.3265,
+      "s_start": 17.2399,
+      "s_center": 17.40315,
+      "s_end": 17.5664,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPC0310",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 17.5664,
+      "s_center": 17.5664,
+      "s_end": 17.5664,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.ACS0270S",
+        "edge_gap": 0.3265,
+        "center_gap": 0.3265
+      },
+      "downstream": {
+        "name": "CA.DHG0320",
+        "edge_gap": 0.0555,
+        "center_gap": 0.128
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0015",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.0555,
+      "s_start": 17.5664,
+      "s_center": 17.59415,
+      "s_end": 17.6219,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0320",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 17.6219,
+      "s_center": 17.6944,
+      "s_end": 17.7669,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPC0310",
+        "edge_gap": 0.0555,
+        "center_gap": 0.128
+      },
+      "downstream": {
+        "name": "CA.SDV0340",
+        "edge_gap": 0.0135,
+        "center_gap": 0.209
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0016",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.0135,
+      "s_start": 17.7669,
+      "s_center": 17.77365,
+      "s_end": 17.7804,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.SDV0340",
+      "type": "corrector_v",
+      "keyword": "VKICKER",
+      "length": 0.246,
+      "s_start": 17.7804,
+      "s_center": 17.9034,
+      "s_end": 18.0264,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0320",
+        "edge_gap": 0.0135,
+        "center_gap": 0.209
+      },
+      "downstream": {
+        "name": "CA.QS0350",
+        "edge_gap": 0.257,
+        "center_gap": 0.38
+      },
+      "params": {
+        "kick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0017",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.257,
+      "s_start": 18.0264,
+      "s_center": 18.1549,
+      "s_end": 18.2834,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QS0350",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 18.2834,
+      "s_center": 18.2834,
+      "s_end": 18.2834,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.SDV0340",
+        "edge_gap": 0.257,
+        "center_gap": 0.38
+      },
+      "downstream": {
+        "name": "CA.QDD0355",
+        "edge_gap": 0.44,
+        "center_gap": 0.553
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0350",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 18.2834,
+      "s_center": 18.3964,
+      "s_end": 18.5094,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.SDV0340",
+        "edge_gap": 0.257,
+        "center_gap": 0.493
+      },
+      "downstream": {
+        "name": "CA.QDD0355",
+        "edge_gap": 0.214,
+        "center_gap": 0.44
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0018",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.214,
+      "s_start": 18.5094,
+      "s_center": 18.6164,
+      "s_end": 18.7234,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QDD0355",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 18.7234,
+      "s_center": 18.8364,
+      "s_end": 18.9494,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0350",
+        "edge_gap": 0.214,
+        "center_gap": 0.44
+      },
+      "downstream": {
+        "name": "CA.QFD0360",
+        "edge_gap": 0.214,
+        "center_gap": 0.44
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0019",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.214,
+      "s_start": 18.9494,
+      "s_center": 19.0564,
+      "s_end": 19.1634,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0360",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 19.1634,
+      "s_center": 19.2764,
+      "s_end": 19.3894,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QDD0355",
+        "edge_gap": 0.214,
+        "center_gap": 0.44
+      },
+      "downstream": {
+        "name": "CA.DHG0385",
+        "edge_gap": 0.5175,
+        "center_gap": 0.703
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0020",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.5175,
+      "s_start": 19.3894,
+      "s_center": 19.64815,
+      "s_end": 19.9069,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHG0385",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.145,
+      "s_start": 19.9069,
+      "s_center": 19.9794,
+      "s_end": 20.0519,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0360",
+        "edge_gap": 0.5175,
+        "center_gap": 0.703
+      },
+      "downstream": {
+        "name": "CA.BTV0390",
+        "edge_gap": 0.5045,
+        "center_gap": 0.577
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0021",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.5045,
+      "s_start": 20.0519,
+      "s_center": 20.30415,
+      "s_end": 20.5564,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0390",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 20.5564,
+      "s_center": 20.5564,
+      "s_end": 20.5564,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHG0385",
+        "edge_gap": 0.5045,
+        "center_gap": 0.577
+      },
+      "downstream": {
+        "name": "CA.ICT0395",
+        "edge_gap": 0.13,
+        "center_gap": 0.13
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0022",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.13,
+      "s_start": 20.5564,
+      "s_center": 20.6214,
+      "s_end": 20.6864,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.ICT0395",
+      "type": "current_monitor",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 20.6864,
+      "s_center": 20.6864,
+      "s_end": 20.6864,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0390",
+        "edge_gap": 0.13,
+        "center_gap": 0.13
+      },
+      "downstream": {
+        "name": "CA.LINAC$END",
+        "edge_gap": 0.3136,
+        "center_gap": 0.3136
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0023",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.3136,
+      "s_start": 20.6864,
+      "s_center": 20.8432,
+      "s_end": 21.0,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.LINAC$END",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 21.0,
+      "s_center": 21.0,
+      "s_end": 21.0,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.ICT0395",
+        "edge_gap": 0.3136,
+        "center_gap": 0.3136
+      },
+      "downstream": {
+        "name": "CA.STRAIGHT$START",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.STRAIGHT$START",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 21.0,
+      "s_center": 21.0,
+      "s_end": 21.0,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.LINAC$END",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "downstream": {
+        "name": "CS.BHB0100_STRAIGHT",
+        "edge_gap": 0.006975094,
+        "center_gap": 0.247035683
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0024",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.006975094,
+      "s_start": 21.0,
+      "s_center": 21.003487547,
+      "s_end": 21.006975094,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CS.BHB0100_STRAIGHT",
+      "type": "dipole",
+      "keyword": "RBEND",
+      "length": 0.480121178,
+      "s_start": 21.006975094,
+      "s_center": 21.247035683,
+      "s_end": 21.487096272,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.STRAIGHT$START",
+        "edge_gap": 0.006975094,
+        "center_gap": 0.247035683
+      },
+      "downstream": {
+        "name": "CA.QS0510",
+        "edge_gap": 0.766303728,
+        "center_gap": 1.006364317
+      },
+      "params": {
+        "angle": 0.0,
+        "e1": 0.0,
+        "e2": 0.0,
+        "field": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0025",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.766303728,
+      "s_start": 21.487096272,
+      "s_center": 21.870248136,
+      "s_end": 22.2534,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QS0510",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 22.2534,
+      "s_center": 22.2534,
+      "s_end": 22.2534,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CS.BHB0100_STRAIGHT",
+        "edge_gap": 0.766303728,
+        "center_gap": 1.006364317
+      },
+      "downstream": {
+        "name": "CA.QDD0515",
+        "edge_gap": 0.5,
+        "center_gap": 0.613
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0510",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 22.2534,
+      "s_center": 22.3664,
+      "s_end": 22.4794,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CS.BHB0100_STRAIGHT",
+        "edge_gap": 0.766303728,
+        "center_gap": 1.119364317
+      },
+      "downstream": {
+        "name": "CA.QDD0515",
+        "edge_gap": 0.274,
+        "center_gap": 0.5
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0026",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.274,
+      "s_start": 22.4794,
+      "s_center": 22.6164,
+      "s_end": 22.7534,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QDD0515",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 22.7534,
+      "s_center": 22.8664,
+      "s_end": 22.9794,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0510",
+        "edge_gap": 0.274,
+        "center_gap": 0.5
+      },
+      "downstream": {
+        "name": "CA.QFD0520",
+        "edge_gap": 0.274,
+        "center_gap": 0.5
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0027",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.274,
+      "s_start": 22.9794,
+      "s_center": 23.1164,
+      "s_end": 23.2534,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0520",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 23.2534,
+      "s_center": 23.3664,
+      "s_end": 23.4794,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QDD0515",
+        "edge_gap": 0.274,
+        "center_gap": 0.5
+      },
+      "downstream": {
+        "name": "CA.BPM0530",
+        "edge_gap": 0.241,
+        "center_gap": 0.413
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0028",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.241,
+      "s_start": 23.4794,
+      "s_center": 23.5999,
+      "s_end": 23.7204,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPM0530",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.118,
+      "s_start": 23.7204,
+      "s_center": 23.7794,
+      "s_end": 23.8384,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0520",
+        "edge_gap": 0.241,
+        "center_gap": 0.413
+      },
+      "downstream": {
+        "name": "CA.DHJ0540",
+        "edge_gap": 0.1,
+        "center_gap": 0.209
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0029",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1,
+      "s_start": 23.8384,
+      "s_center": 23.8884,
+      "s_end": 23.9384,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHJ0540",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.1,
+      "s_start": 23.9384,
+      "s_center": 23.9884,
+      "s_end": 24.0384,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPM0530",
+        "edge_gap": 0.1,
+        "center_gap": 0.209
+      },
+      "downstream": {
+        "name": "CA.DHJ0590",
+        "edge_gap": 1.127,
+        "center_gap": 1.227
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0030",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 1.127,
+      "s_start": 24.0384,
+      "s_center": 24.6019,
+      "s_end": 25.1654,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHJ0590",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.1,
+      "s_start": 25.1654,
+      "s_center": 25.2154,
+      "s_end": 25.2654,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHJ0540",
+        "edge_gap": 1.127,
+        "center_gap": 1.227
+      },
+      "downstream": {
+        "name": "CA.BPM0595",
+        "edge_gap": 0.135,
+        "center_gap": 0.244
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0031",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.135,
+      "s_start": 25.2654,
+      "s_center": 25.3329,
+      "s_end": 25.4004,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPM0595",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.118,
+      "s_start": 25.4004,
+      "s_center": 25.4594,
+      "s_end": 25.5184,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHJ0590",
+        "edge_gap": 0.135,
+        "center_gap": 0.244
+      },
+      "downstream": {
+        "name": "CA.BTV0620",
+        "edge_gap": 0.416,
+        "center_gap": 0.475
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0032",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.416,
+      "s_start": 25.5184,
+      "s_center": 25.7264,
+      "s_end": 25.9344,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0620",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 25.9344,
+      "s_center": 25.9344,
+      "s_end": 25.9344,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPM0595",
+        "edge_gap": 0.416,
+        "center_gap": 0.475
+      },
+      "downstream": {
+        "name": "CA.BPM0690",
+        "edge_gap": 2.756,
+        "center_gap": 2.815
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0033",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 2.756,
+      "s_start": 25.9344,
+      "s_center": 27.3124,
+      "s_end": 28.6904,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPM0690",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.118,
+      "s_start": 28.6904,
+      "s_center": 28.7494,
+      "s_end": 28.8084,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0620",
+        "edge_gap": 2.756,
+        "center_gap": 2.815
+      },
+      "downstream": {
+        "name": "CA.DHJ0710",
+        "edge_gap": 0.464,
+        "center_gap": 0.573
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0034",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.464,
+      "s_start": 28.8084,
+      "s_center": 29.0404,
+      "s_end": 29.2724,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHJ0710",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.1,
+      "s_start": 29.2724,
+      "s_center": 29.3224,
+      "s_end": 29.3724,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPM0690",
+        "edge_gap": 0.464,
+        "center_gap": 0.573
+      },
+      "downstream": {
+        "name": "CA.BTV0730",
+        "edge_gap": 0.382,
+        "center_gap": 0.432
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0035",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.382,
+      "s_start": 29.3724,
+      "s_center": 29.5634,
+      "s_end": 29.7544,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0730",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 29.7544,
+      "s_center": 29.7544,
+      "s_end": 29.7544,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHJ0710",
+        "edge_gap": 0.382,
+        "center_gap": 0.432
+      },
+      "downstream": {
+        "name": "CA.QS0760",
+        "edge_gap": 0.317,
+        "center_gap": 0.317
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0036",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.317,
+      "s_start": 29.7544,
+      "s_center": 29.9129,
+      "s_end": 30.0714,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QS0760",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 30.0714,
+      "s_center": 30.0714,
+      "s_end": 30.0714,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0730",
+        "edge_gap": 0.317,
+        "center_gap": 0.317
+      },
+      "downstream": {
+        "name": "CA.QDD0765",
+        "edge_gap": 0.45,
+        "center_gap": 0.563
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0760",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 30.0714,
+      "s_center": 30.1844,
+      "s_end": 30.2974,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0730",
+        "edge_gap": 0.317,
+        "center_gap": 0.43
+      },
+      "downstream": {
+        "name": "CA.QDD0765",
+        "edge_gap": 0.224,
+        "center_gap": 0.45
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0037",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.224,
+      "s_start": 30.2974,
+      "s_center": 30.4094,
+      "s_end": 30.5214,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QDD0765",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 30.5214,
+      "s_center": 30.6344,
+      "s_end": 30.7474,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0760",
+        "edge_gap": 0.224,
+        "center_gap": 0.45
+      },
+      "downstream": {
+        "name": "CA.QFD0770",
+        "edge_gap": 0.224,
+        "center_gap": 0.45
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0038",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.224,
+      "s_start": 30.7474,
+      "s_center": 30.8594,
+      "s_end": 30.9714,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0770",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 30.9714,
+      "s_center": 31.0844,
+      "s_end": 31.1974,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QDD0765",
+        "edge_gap": 0.224,
+        "center_gap": 0.45
+      },
+      "downstream": {
+        "name": "CA.DHJ0780",
+        "edge_gap": 0.42,
+        "center_gap": 0.583
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0039",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.42,
+      "s_start": 31.1974,
+      "s_center": 31.4074,
+      "s_end": 31.6174,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHJ0780",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.1,
+      "s_start": 31.6174,
+      "s_center": 31.6674,
+      "s_end": 31.7174,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0770",
+        "edge_gap": 0.42,
+        "center_gap": 0.583
+      },
+      "downstream": {
+        "name": "CA.PLC0800M",
+        "edge_gap": 0.54,
+        "center_gap": 0.59
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0040",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.54,
+      "s_start": 31.7174,
+      "s_center": 31.9874,
+      "s_end": 32.2574,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.PLC0800M",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 32.2574,
+      "s_center": 32.2574,
+      "s_end": 32.2574,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHJ0780",
+        "edge_gap": 0.54,
+        "center_gap": 0.59
+      },
+      "downstream": {
+        "name": "CA.BTV0800",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0800",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 32.2574,
+      "s_center": 32.2574,
+      "s_end": 32.2574,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.PLC0800M",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "downstream": {
+        "name": "CA.BTV0810",
+        "edge_gap": 0.292,
+        "center_gap": 0.292
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0041",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.292,
+      "s_start": 32.2574,
+      "s_center": 32.4034,
+      "s_end": 32.5494,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0810",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 32.5494,
+      "s_center": 32.5494,
+      "s_end": 32.5494,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0800",
+        "edge_gap": 0.292,
+        "center_gap": 0.292
+      },
+      "downstream": {
+        "name": "CA.BPM0820",
+        "edge_gap": 0.244,
+        "center_gap": 0.303
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0042",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.244,
+      "s_start": 32.5494,
+      "s_center": 32.6714,
+      "s_end": 32.7934,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPM0820",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.118,
+      "s_start": 32.7934,
+      "s_center": 32.8524,
+      "s_end": 32.9114,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0810",
+        "edge_gap": 0.244,
+        "center_gap": 0.303
+      },
+      "downstream": {
+        "name": "CA.DHJ0840",
+        "edge_gap": 0.54,
+        "center_gap": 0.649
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0043",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.54,
+      "s_start": 32.9114,
+      "s_center": 33.1814,
+      "s_end": 33.4514,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DHJ0840",
+      "type": "corrector_hv",
+      "keyword": "KICKER",
+      "length": 0.1,
+      "s_start": 33.4514,
+      "s_center": 33.5014,
+      "s_end": 33.5514,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BPM0820",
+        "edge_gap": 0.54,
+        "center_gap": 0.649
+      },
+      "downstream": {
+        "name": "CA.STRAIGHT$END",
+        "edge_gap": 0.0,
+        "center_gap": 0.05
+      },
+      "params": {
+        "hkick": 0.0,
+        "vkick": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.STRAIGHT$END",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 33.5514,
+      "s_center": 33.5514,
+      "s_end": 33.5514,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.DHJ0840",
+        "edge_gap": 0.0,
+        "center_gap": 0.05
+      },
+      "downstream": {
+        "name": "CA.SCATTERER$START",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.SCATTERER$START",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 33.5514,
+      "s_center": 33.5514,
+      "s_end": 33.5514,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.STRAIGHT$END",
+        "edge_gap": 0.0,
+        "center_gap": 0.0
+      },
+      "downstream": {
+        "name": "CA.PSC0001",
+        "edge_gap": 0.084,
+        "center_gap": 0.08405
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0044",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.084,
+      "s_start": 33.5514,
+      "s_center": 33.5934,
+      "s_end": 33.6354,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.PSC0001",
+      "type": "scatterer",
+      "keyword": "ABSORBER",
+      "length": 0.0001,
+      "s_start": 33.6354,
+      "s_center": 33.63545,
+      "s_end": 33.6355,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.SCATTERER$START",
+        "edge_gap": 0.084,
+        "center_gap": 0.08405
+      },
+      "downstream": {
+        "name": "CA.QS0870",
+        "edge_gap": 0.2229,
+        "center_gap": 0.22295
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.1
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0045",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.2229,
+      "s_start": 33.6355,
+      "s_center": 33.74695,
+      "s_end": 33.8584,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QS0870",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 33.8584,
+      "s_center": 33.8584,
+      "s_end": 33.8584,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.PSC0001",
+        "edge_gap": 0.2229,
+        "center_gap": 0.22295
+      },
+      "downstream": {
+        "name": "CA.FLT0001",
+        "edge_gap": 0.3091,
+        "center_gap": 0.309444
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QDD0870",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 33.8584,
+      "s_center": 33.9714,
+      "s_end": 34.0844,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.PSC0001",
+        "edge_gap": 0.2229,
+        "center_gap": 0.33595
+      },
+      "downstream": {
+        "name": "CA.FLT0001",
+        "edge_gap": 0.0831,
+        "center_gap": 0.196444
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0046",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.0831,
+      "s_start": 34.0844,
+      "s_center": 34.12595,
+      "s_end": 34.1675,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.FLT0001",
+      "type": "scatterer",
+      "keyword": "ABSORBER",
+      "length": 0.000688,
+      "s_start": 34.1675,
+      "s_center": 34.167844,
+      "s_end": 34.168188,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QDD0870",
+        "edge_gap": 0.0831,
+        "center_gap": 0.196444
+      },
+      "downstream": {
+        "name": "CA.FLT0002",
+        "edge_gap": 0.0,
+        "center_gap": 0.000733
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.688
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.FLT0002",
+      "type": "scatterer",
+      "keyword": "ABSORBER",
+      "length": 0.000778,
+      "s_start": 34.168188,
+      "s_center": 34.168577,
+      "s_end": 34.168966,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.FLT0001",
+        "edge_gap": 0.0,
+        "center_gap": 0.000733
+      },
+      "downstream": {
+        "name": "CA.FLT0003",
+        "edge_gap": 0.0,
+        "center_gap": 0.0006795
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.778
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.FLT0003",
+      "type": "scatterer",
+      "keyword": "ABSORBER",
+      "length": 0.000581,
+      "s_start": 34.168966,
+      "s_center": 34.1692565,
+      "s_end": 34.169547,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.FLT0002",
+        "edge_gap": 0.0,
+        "center_gap": 0.0006795
+      },
+      "downstream": {
+        "name": "CA.FLT0004",
+        "edge_gap": 0.0,
+        "center_gap": 0.0004835
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.581
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.FLT0004",
+      "type": "scatterer",
+      "keyword": "ABSORBER",
+      "length": 0.000386,
+      "s_start": 34.169547,
+      "s_center": 34.16974,
+      "s_end": 34.169933,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.FLT0003",
+        "edge_gap": 0.0,
+        "center_gap": 0.0004835
+      },
+      "downstream": {
+        "name": "CA.QFD0880",
+        "edge_gap": 0.138467,
+        "center_gap": 0.25166
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.386
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0047",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.138467,
+      "s_start": 34.169933,
+      "s_center": 34.2391665,
+      "s_end": 34.3084,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.QFD0880",
+      "type": "quadrupole",
+      "keyword": "QUADRUPOLE",
+      "length": 0.226,
+      "s_start": 34.3084,
+      "s_center": 34.4214,
+      "s_end": 34.5344,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.FLT0004",
+        "edge_gap": 0.138467,
+        "center_gap": 0.25166
+      },
+      "downstream": {
+        "name": "CA.BPM0890",
+        "edge_gap": 0.069,
+        "center_gap": 0.241
+      },
+      "params": {
+        "k1": 0.0,
+        "gradient": 0.0,
+        "aperture": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF_NEW_2",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.069,
+      "s_start": 34.5344,
+      "s_center": 34.5689,
+      "s_end": 34.6034,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BPM0890",
+      "type": "bpm",
+      "keyword": "MONITOR",
+      "length": 0.118,
+      "s_start": 34.6034,
+      "s_center": 34.6624,
+      "s_end": 34.7214,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.QFD0880",
+        "edge_gap": 0.069,
+        "center_gap": 0.241
+      },
+      "downstream": {
+        "name": "CA.BHB0900",
+        "edge_gap": 0.178594842,
+        "center_gap": 0.4748
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0049",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.178594842,
+      "s_start": 34.7214,
+      "s_center": 34.810697421,
+      "s_end": 34.899994842,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BHB0900",
+      "type": "dipole",
+      "keyword": "RBEND",
+      "length": 0.474410316,
+      "s_start": 34.899994842,
+      "s_center": 35.1372,
+      "s_end": 35.374405158,
+      "angle": -0.397062405,
+      "upstream": {
+        "name": "CA.BPM0890",
+        "edge_gap": 0.178594842,
+        "center_gap": 0.4748
+      },
+      "downstream": {
+        "name": "CA.BTV0910",
+        "edge_gap": 0.118594842,
+        "center_gap": 0.3558
+      },
+      "params": {
+        "angle": -0.397062405,
+        "e1": 0.0,
+        "e2": 0.0,
+        "field": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.BTV0910",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 35.493,
+      "s_center": 35.493,
+      "s_end": 35.493,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BHB0900",
+        "edge_gap": 0.118594842,
+        "center_gap": 0.3558
+      },
+      "downstream": {
+        "name": "TABLEEDGE",
+        "edge_gap": 0.0104,
+        "center_gap": 0.0104
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0050",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.128994842,
+      "s_start": 35.374405158,
+      "s_center": 35.438902579,
+      "s_end": 35.5034,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "TABLEEDGE",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 35.5034,
+      "s_center": 35.5034,
+      "s_end": 35.5034,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.BTV0910",
+        "edge_gap": 0.0104,
+        "center_gap": 0.0104
+      },
+      "downstream": {
+        "name": "CA.AIR0001",
+        "edge_gap": 0.137904,
+        "center_gap": 0.137904
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF_NEW_1",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.137904,
+      "s_start": 35.5034,
+      "s_center": 35.572352,
+      "s_end": 35.641304,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.AIR0001",
+      "type": "window",
+      "keyword": "INTERFACE",
+      "length": 0.0,
+      "s_start": 35.641304,
+      "s_center": 35.641304,
+      "s_end": 35.641304,
+      "angle": 0.0,
+      "upstream": {
+        "name": "TABLEEDGE",
+        "edge_gap": 0.137904,
+        "center_gap": 0.137904
+      },
+      "downstream": {
+        "name": "CA.COL0001",
+        "edge_gap": 0.087629,
+        "center_gap": 0.112629
+      },
+      "params": {
+        "material": "",
+        "thickness": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0051",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.087629,
+      "s_start": 35.641304,
+      "s_center": 35.6851185,
+      "s_end": 35.728933,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.COL0001",
+      "type": "collimator",
+      "keyword": "COLLIMATOR",
+      "length": 0.05,
+      "s_start": 35.728933,
+      "s_center": 35.753933,
+      "s_end": 35.778933,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.AIR0001",
+        "edge_gap": 0.087629,
+        "center_gap": 0.112629
+      },
+      "downstream": {
+        "name": "CA.SCATTERER$END",
+        "edge_gap": 0.421067,
+        "center_gap": 0.446067
+      },
+      "params": {
+        "material": "",
+        "aperture_x": 0.0,
+        "aperture_y": 0.0
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF0052",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.421067,
+      "s_start": 35.778933,
+      "s_center": 35.9894665,
+      "s_end": 36.2,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.SCATTERER$END",
+      "type": "marker",
+      "keyword": "MARKER",
+      "length": 0.0,
+      "s_start": 36.2,
+      "s_center": 36.2,
+      "s_end": 36.2,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.COL0001",
+        "edge_gap": 0.421067,
+        "center_gap": 0.446067
+      },
+      "downstream": {
+        "name": "CA.WATER_TANK",
+        "edge_gap": 0.0,
+        "center_gap": 0.15
+      },
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.WATER_TANK",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.3,
+      "s_start": 36.2,
+      "s_center": 36.35,
+      "s_end": 36.5,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.SCATTERER$END",
+        "edge_gap": 0.0,
+        "center_gap": 0.15
+      },
+      "downstream": null,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    }
+  ]
+}
