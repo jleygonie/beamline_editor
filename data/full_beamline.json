@@ -2602,9 +2602,9 @@
         "center_gap": 0.112629
       },
       "downstream": {
-        "name": "CA.SCATTERER$END",
-        "edge_gap": 0.421067,
-        "center_gap": 0.446067
+        "name": "IN_AIR_YAG",
+        "edge_gap": 0.321067,
+        "center_gap": 0.346067
       },
       "params": {
         "material": "",
@@ -2618,9 +2618,47 @@
       "name": "CA.DRF0052",
       "type": "drift",
       "keyword": "DRIFT",
-      "length": 0.421067,
+      "length": 0.321067,
       "s_start": 35.654933,
-      "s_center": 35.8654665,
+      "s_center": 35.8154665,
+      "s_end": 35.976,
+      "angle": 0.0,
+      "params": {},
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "IN_AIR_YAG",
+      "type": "screen",
+      "keyword": "MONITOR",
+      "length": 0.0,
+      "s_start": 35.976,
+      "s_center": 35.976,
+      "s_end": 35.976,
+      "angle": 0.0,
+      "upstream": {
+        "name": "CA.COL0001",
+        "edge_gap": 0.321067,
+        "center_gap": 0.346067
+      },
+      "downstream": {
+        "name": "CA.SCATTERER$END",
+        "edge_gap": 0.1,
+        "center_gap": 0.1
+      },
+      "params": {
+        "material": ""
+      },
+      "comment": "",
+      "extra": {}
+    },
+    {
+      "name": "CA.DRF_NEW_7",
+      "type": "drift",
+      "keyword": "DRIFT",
+      "length": 0.1,
+      "s_start": 35.976,
+      "s_center": 36.026,
       "s_end": 36.076,
       "angle": 0.0,
       "params": {},
@@ -2637,9 +2675,9 @@
       "s_end": 36.076,
       "angle": 0.0,
       "upstream": {
-        "name": "CA.COL0001",
-        "edge_gap": 0.421067,
-        "center_gap": 0.446067
+        "name": "IN_AIR_YAG",
+        "edge_gap": 0.1,
+        "center_gap": 0.1
       },
       "downstream": {
         "name": "CA.WATER_TANK",

@@ -65,7 +65,14 @@ class ElementTableModel(QAbstractTableModel):
             return f"{name} [{self.win.unit}]" if 4 <= section <= 7 else name
         return None
 
+    def _valid(self, index) -> bool:
+        """Whether the row still exists: the model is refreshed after the edit that changed the line."""
+        bl = self.win.bl
+        return bl is not None and 0 <= index.row() < len(self.rows) and self.rows[index.row()] < len(bl.elements)
+
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if not self._valid(index):
+            return None
         i, col = self.rows[index.row()], index.column()
         x = self.win.bl.elements[i]
         if role == Qt.ItemDataRole.TextAlignmentRole and (col >= 4 or col == 0):
@@ -94,6 +101,8 @@ class ElementTableModel(QAbstractTableModel):
         return f | Qt.ItemFlag.ItemIsEditable if index.column() > 0 else f
 
     def setData(self, index, value, role=Qt.ItemDataRole.EditRole) -> bool:
+        if not self._valid(index):
+            return False
         i, col = self.rows[index.row()], index.column()
         x = self.win.bl.elements[i]
         if col == 1:
@@ -194,6 +203,20 @@ def make_spin(decimals: int = 6, suffix: str = "") -> QDoubleSpinBox:
     return spin
 
 
+MODE_TIP = ("Element only: the drifts on both sides absorb the move, so the line length stays the same.\n"
+            "Element + rest of line: everything beyond the element moves with it (downstream, or upstream\n"
+            "when the upstream element of a pair moves), so the line gets longer or shorter.")
+
+
+def make_mode_combo() -> QComboBox:
+    """What moves with an element: data "move" (element only) or "shift" (element + rest of the line)."""
+    combo = QComboBox()
+    combo.addItem("Element only", "move")
+    combo.addItem("Element + rest of line", "shift")
+    combo.setToolTip(MODE_TIP)
+    return combo
+
+
 def set_spin(spin: QDoubleSpinBox, value: float) -> None:
     spin.blockSignals(True)
     spin.setValue(value)
@@ -234,8 +257,7 @@ class PropertyPanel(QWidget):
         self.anchor = QComboBox()
         self.anchor.addItems(["start", "center", "end"])
         self.anchor.setCurrentText("center")
-        self.mode = QComboBox()
-        self.mode.addItems(["Move", "Shift"])
+        self.mode = make_mode_combo()
         self.up_gap, self.down_gap = make_spin(), make_spin()
         self.angle = make_spin(9, " rad")
         self.angle.setToolTip("Bend angle: a positive angle turns the beam to the right (MAD-X convention)")
@@ -254,7 +276,7 @@ class PropertyPanel(QWidget):
         form.addRow("s_end", self.pos["end"])
         form.addRow("Length", self.length)
         form.addRow("Anchor", self.anchor)
-        form.addRow("Mode", self.mode)
+        form.addRow("Moves", self.mode)
         form.addRow("Up gap", self.up_gap)
         form.addRow("Down gap", self.down_gap)
         form.addRow("Angle", angle)
@@ -357,7 +379,7 @@ class PropertyPanel(QWidget):
     def _set_position(self, ref: str):
         spin = self.pos[ref]
         if spin_changed(spin):
-            i, v, mode = self.index, spin.value() / self.scale, self.mode.currentText().lower()
+            i, v, mode = self.index, spin.value() / self.scale, self.mode.currentData()
             self._apply("Set position", lambda bl: bl.set_position(i, v, ref, mode))
 
     def _set_length(self):
@@ -371,7 +393,7 @@ class PropertyPanel(QWidget):
             return
         i = self.index
         delta = (spin.value() - spin.property("shown")) / self.scale
-        shift = self.mode.currentText() == "Shift"
+        shift = self.mode.currentData() == "shift"
         if upstream:
             fn = (lambda bl: bl.shift(i, delta)) if shift else (lambda bl: bl.move(i, delta))
         else:
@@ -427,19 +449,11 @@ class DistancePanel(QWidget):
         moving.addWidget(self.move_b)
         moving.addStretch()
         form.addRow("Moving", moving)
-        self.mode = QComboBox()
-        self.mode.addItems(["Move", "Shift"])
-        form.addRow("Mode", self.mode)
+        self.mode = make_mode_combo()
+        form.addRow("Moves", self.mode)
         self.swap = QPushButton("Swap reference")
         form.addRow(self.swap)
         self.swap.clicked.connect(lambda: (self.move_b if self.move_a.isChecked() else self.move_a).setChecked(True))
-        self.move_a.toggled.connect(self._update_mode)
-
-    def _update_mode(self):
-        shift_item = self.mode.model().item(1)
-        shift_item.setEnabled(self.move_b.isChecked())
-        if self.move_a.isChecked():
-            self.mode.setCurrentIndex(0)
 
     def refresh(self) -> None:
         bl, sel = self.win.bl, self.win.selection
@@ -461,6 +475,86 @@ class DistancePanel(QWidget):
         a, b = self.win.selection
         v = spin.value() / UNIT_SCALE[self.win.unit]
         moving = "B" if self.move_b.isChecked() else "A"
-        mode = self.mode.currentText().lower()
+        mode = self.mode.currentData()
         if not self.win.apply("Set distance", lambda bl: bl.set_distance(a, b, key, v, moving, mode)):
+            self.refresh()
+
+
+# ---------------------------------------------------------------- measure panel
+KIND_TEXT = {"start": "start", "center": "centre", "end": "end"}
+
+
+class MeasurePanel(QWidget):
+    """Edit the distance of the measurement selected on the canvas by moving one of its two elements."""
+
+    def __init__(self, win):
+        super().__init__()
+        self.win = win
+        self.refs: tuple | None = None  # (A, B) point refs, A upstream
+        form = QFormLayout(self)
+        self.a, self.b = QLabel(), QLabel()
+        form.addRow("A", self.a)
+        form.addRow("B", self.b)
+        self.distance = make_spin()
+        self.distance.editingFinished.connect(self._set)
+        form.addRow("Distance", self.distance)
+        self.move_a, self.move_b = QRadioButton("A"), QRadioButton("B")
+        self.move_b.setChecked(True)
+        group = QButtonGroup(self)
+        group.addButton(self.move_a)
+        group.addButton(self.move_b)
+        moving = QHBoxLayout()
+        moving.addWidget(self.move_a)
+        moving.addWidget(self.move_b)
+        moving.addStretch()
+        form.addRow("Moving", moving)
+        self.mode = make_mode_combo()
+        form.addRow("Moves", self.mode)
+        self.hint = QLabel()
+        self.hint.setWordWrap(True)
+        form.addRow(self.hint)
+
+    def refresh(self) -> None:
+        bl, canvas = self.win.bl, self.win.canvas
+        k = canvas.selected_measure
+        self.refs = None
+        if bl is None or k is None or k >= len(canvas.measures):
+            return
+        a, b = canvas.measures[k]
+        try:
+            sa, sb = bl.point_s(a), bl.point_s(b)
+        except KeyError:
+            self.a.setText("(element removed)")
+            self.b.setText("")
+            self.setEnabled(False)
+            return
+        if sb < sa:
+            a, b, sa, sb = b, a, sb, sa
+        self.setEnabled(True)
+        self.refs = (a, b)
+        self.a.setText(f"{a[0]} ({KIND_TEXT[a[1]]})")
+        self.b.setText(f"{b[0]} ({KIND_TEXT[b[1]]})")
+        u = self.win.unit
+        self.distance.setDecimals(UNIT_DECIMALS[u])
+        self.distance.setSuffix(f" {u}")
+        set_spin(self.distance, (sb - sa) * UNIT_SCALE[u])
+        same = a[0] == b[0]
+        self.hint.setText("Both points are on the same element: its length changes, the point of the "
+                          "other side stays in place." if same else "")
+        self.hint.setVisible(same)
+        self.mode.setEnabled(not same)
+
+    def edit(self) -> None:
+        """Put the cursor in the distance box."""
+        self.distance.setFocus()
+        self.distance.selectAll()
+
+    def _set(self) -> None:
+        if self.refs is None or not spin_changed(self.distance):
+            return
+        a, b = self.refs
+        v = self.distance.value() / UNIT_SCALE[self.win.unit]
+        moving = "B" if self.move_b.isChecked() else "A"
+        mode = self.mode.currentData()
+        if not self.win.apply("Set measured distance", lambda bl: bl.set_point_distance(a, b, v, moving, mode)):
             self.refresh()

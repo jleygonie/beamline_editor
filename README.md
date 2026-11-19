@@ -15,6 +15,13 @@ Requires Python 3.10 or newer.
 
 Running the script again updates the packages in the existing environment.
 
+On Windows, use the `.bat` scripts from cmd or PowerShell (the `.sh` scripts also work in Git Bash):
+
+```bat
+create_venv.bat
+run_beamline_editor.bat data\1_LINAC_Survey.txt
+```
+
 ## Running
 
 ```bash
@@ -43,15 +50,17 @@ The script can be called from any directory.
   position (start, centre or end), length, gaps to its neighbours, and type-specific parameters.
   - Setting the **centre** slides the element along the line (same length). Setting the **start** or
     **end** moves only that edge, so the element grows or shrinks and its centre follows.
-  - **Move** keeps the total line length: the drifts on both sides absorb the change.
-  - **Shift** also moves everything downstream.
+  - **Moves: Element only** keeps the total line length: the drifts on both sides absorb the change.
+  - **Moves: Element + rest of line** also moves everything downstream, so the line gets longer or shorter.
   - `$START` / `$END` markers can be moved too: the drift next to them stretches or shrinks, which
     changes the line length.
   - A position is always applied, even if the element ends up on top of another one: overlapping
     elements are drawn in red (canvas and table) and reported as errors until they are moved apart.
-- Drag an element on the canvas to move it (positions snap to 0.1 mm).
+- Drag an element on the canvas to move it (positions snap to 0.1 mm). Hold `Shift` while dragging to push the
+  rest of the line along with it.
 - `Ctrl`+click a second element to show and edit the distances between the two
-  (centre-to-centre, edge gap, start-to-start, end-to-end).
+  (centre-to-centre, edge gap, start-to-start, end-to-end). Choose which element moves (A upstream, B downstream).
+  With **Element + rest of line**, everything beyond the moving element follows: downstream of B, or upstream of A.
 - **Insert…** (`Ins`) adds an element at the given centre (by default in the gap after the selected
   element), cutting the drift there; **Delete** removes the selected element and merges
   the drifts around it.
@@ -91,7 +100,11 @@ equal to the radius (1 px per mm). Hover over one to see its values. All values 
 - Click two points. A bar is added above the line with the distance written in a box.
 - Add as many bars as you like. They stay on the figure when you leave measure mode, and they follow the
   elements when you edit them.
-- Click a bar to select it, then press `Delete` to remove it. **Clear measures** removes them all.
+- Click a bar to select it. The **Properties** panel then shows its distance, which you can edit: choose which
+  element moves (A upstream, B downstream) and whether the rest of the line follows, as for two selected elements.
+  Double-click a bar to jump straight to its distance. When both points are on the same element, its length
+  changes instead, and the other point stays in place.
+- Press `Delete` to remove the selected bar. **Clear measures** removes them all.
 - `Esc` cancels a half-made measurement; pressing it again leaves measure mode.
 - Bars are not saved, and opening another file clears them.
 
@@ -125,16 +138,30 @@ select 1 file to compare it with the layout currently open (including unsaved ed
 
 ### Files
 - **Open…** (`Ctrl+O`) reads MAD-X survey files (`.txt`, `.tfs`) and the editor's JSON format.
-- **Save survey…** (`Ctrl+S`) writes a survey file. Rows that were not changed are copied exactly.
-- **Save JSON…** (`Ctrl+Shift+S`) writes a JSON file that also stores types, parameters, comments, the
+- **Save** (`Ctrl+S`) writes back to the open file, in its own format (survey or JSON). A name or value
+  you are still typing is applied first. A glued layout that has no file yet asks where to save it.
+- **Save survey as…** (`Ctrl+Alt+S`) writes a survey file. Rows that were not changed are copied exactly.
+- **Save JSON as…** (`Ctrl+Shift+S`) writes a JSON file that also stores types, parameters, comments, the
   gaps to each element's neighbours, the apertures and the floor-plan origin.
+
+### Version history
+Every save keeps a copy of the file in a `.history` folder next to it, for example
+`data/.history/1_LINAC_Survey.txt/2026-10-07_14-03-12.txt`. The file as it was before your first save is kept too.
+**History…** (`Ctrl+H`) lists the versions of the current file. You can compare one with the layout that is open,
+compare two versions, or open an old version (save it to make it the newest version).
+
+### Crash safety
+- Unsaved work is autosaved a moment after each edit to `~/.beamline_editor/autosave/`. If the editor does not
+  close normally, it offers to recover that work the next time it starts.
+- An internal error no longer closes the editor. It shows a message, autosaves, and writes the details to
+  `~/.beamline_editor/errors.log`. Please send that file if something goes wrong.
 
 ## Project layout
 
 ```
 beamline_editor/
-├── create_venv.sh          create the virtual environment
-├── run_beamline_editor.sh  launch the editor
+├── create_venv.sh / .bat   create the virtual environment
+├── run_beamline_editor.sh / .bat  launch the editor
 ├── requirements.txt
 ├── data/                   sample survey and JSON files
 ├── src/
@@ -148,7 +175,9 @@ beamline_editor/
 │   ├── json_io.py          JSON reader / writer
 │   ├── glue.py             gluing several beamlines together
 │   ├── compare.py          element-by-element comparison of two beamlines
-│   └── compare_window.py   comparison window (drawing and table of differences)
+│   ├── compare_window.py   comparison window (drawing and table of differences)
+│   ├── history.py          version history of saved files
+│   └── recovery.py         error log, autosave and crash recovery
 └── tests/                  unit tests
 ```
 

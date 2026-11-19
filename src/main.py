@@ -5,6 +5,7 @@ import copy
 import json
 import os
 import sys
+import time
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QAction, QKeySequence, QUndoCommand, QUndoStack
@@ -14,13 +15,19 @@ from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog, QDialo
                              QStackedWidget, QToolButton, QVBoxLayout, QWidget)
 
 import element_types as et
+import history
+import recovery
 from canvas import Canvas
 from compare_window import CompareWindow
 from glue import glue
 from json_io import from_dict, write_json
 from model import TOL, Beamline, EditError, Element, Issue
-from panels import UNIT_DECIMALS, UNIT_SCALE, DistancePanel, ElementTable, PropertyPanel, fmt_len, make_spin
+from panels import (UNIT_DECIMALS, UNIT_SCALE, DistancePanel, ElementTable, MeasurePanel, PropertyPanel, fmt_len,
+                    make_spin)
 from survey_io import parse_survey, write_survey
+
+AUTOSAVE_DELAY = 1500  # ms after the last edit
+WINDOWS: list[MainWindow] = []  # open editor windows, for the error handler
 
 
 def snapshot(bl: Beamline) -> tuple:
@@ -86,6 +93,17 @@ class InsertDialog(QDialog):
         return Element(name=self.name.text().strip(), keyword=et.default_keyword(typ, "MARKER"), type=typ,
                        s_end=self.center.value() / self.scale + length / 2, length=length,
                        params=et.default_params(typ, length))
+
+
+def file_format(path: str) -> str:
+    """ "json" or "survey" for an existing layout file, "" otherwise (e.g. a glued layout not saved yet)."""
+    if not path or not os.path.isfile(path):
+        return ""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return "json" if f.read(4096).lstrip().startswith("{") else "survey"
+    except (OSError, UnicodeDecodeError):
+        return ""
 
 
 def read_layout(path: str) -> tuple[Beamline, list[str]]:
@@ -163,10 +181,12 @@ class MainWindow(QMainWindow):
         self.table = ElementTable(self)
         self.props = PropertyPanel(self)
         self.dist = DistancePanel(self)
+        self.measure = MeasurePanel(self)
         self.stack = QStackedWidget()
         self.stack.addWidget(QWidget())
         self.stack.addWidget(self.props)
         self.stack.addWidget(self.dist)
+        self.stack.addWidget(self.measure)
         for title, widget, area in (("Elements", self.table, Qt.DockWidgetArea.BottomDockWidgetArea),
                                     ("Properties", self.stack, Qt.DockWidgetArea.RightDockWidgetArea)):
             dock = QDockWidget(title, self)
@@ -182,7 +202,19 @@ class MainWindow(QMainWindow):
         self.canvas.dragFinished.connect(self._drag_finished)
         self.canvas.message.connect(lambda text: self.statusBar().showMessage(text, 4000))
         self.canvas.measureModeExited.connect(lambda: self.measure_act.setChecked(False))
+        self.canvas.measureSelected.connect(lambda _k: self._refresh_panels())
+        self.canvas.measureEditRequested.connect(lambda _k: self.measure.edit())
         self.undo.cleanChanged.connect(self._update_title)
+
+        self.autosave = recovery.Autosave()
+        self.autosave_timer = QTimer(self)
+        self.autosave_timer.setSingleShot(True)
+        self.autosave_timer.setInterval(AUTOSAVE_DELAY)
+        self.autosave_timer.timeout.connect(self.write_autosave)
+        self.undo.indexChanged.connect(lambda _i: self.autosave_timer.start())
+        self.undo.cleanChanged.connect(lambda _c: self.autosave_timer.start())
+        WINDOWS.append(self)
+
         self.resize(1300, 850)
         self.refresh()
 
@@ -204,8 +236,14 @@ class MainWindow(QMainWindow):
         compare_act = self._action("Compare…", self.compare_dialog, "Ctrl+D")
         compare_act.setToolTip("Compare two files, or the current layout with a file (Ctrl+D)")
         tb.addAction(compare_act)
-        tb.addAction(self._action("Save survey…", self.save_survey, "Ctrl+S"))
-        tb.addAction(self._action("Save JSON…", self.save_json, "Ctrl+Shift+S"))
+        save_act = self._action("Save", self.save, "Ctrl+S")
+        save_act.setToolTip("Save to the open file, in its format (Ctrl+S)")
+        tb.addAction(save_act)
+        tb.addAction(self._action("Save survey as…", self.save_survey, "Ctrl+Alt+S"))
+        tb.addAction(self._action("Save JSON as…", self.save_json, "Ctrl+Shift+S"))
+        history_act = self._action("History…", self.history_dialog, "Ctrl+H")
+        history_act.setToolTip("Earlier saved versions of this file: compare or reopen them (Ctrl+H)")
+        tb.addAction(history_act)
         tb.addSeparator()
         self.undo_act = self._action("Undo", self.undo.undo, "Ctrl+Z")
         self.redo_act = self._action("Redo", self.undo.redo, "Ctrl+Y")
@@ -300,12 +338,16 @@ class MainWindow(QMainWindow):
 
     def _refresh_panels(self) -> None:
         k = len(self.selection) if self.bl else 0
-        self.stack.setCurrentIndex(k if k <= 2 else 0)
+        measure = self.bl is not None and self.canvas.selected_measure is not None
+        self.stack.setCurrentIndex(3 if measure else k if k <= 2 else 0)
         self.props.refresh()
         self.dist.refresh()
+        self.measure.refresh()
 
     def set_selection(self, sel: list[int], source=None) -> None:
         self.selection = list(sel)
+        if sel:
+            self.canvas.deselect_measure()
         if source is not self.canvas:
             self.canvas.set_selection(self.selection)
         if source is not self.table:
@@ -359,6 +401,23 @@ class MainWindow(QMainWindow):
         result = self._read(path)
         if result is not None:
             self._set_beamline(result[0], path, result[1])
+
+    def open_version(self, version: str, path: str) -> bool:
+        """Load an earlier version of path as the current, unsaved layout."""
+        result = self._read(version)
+        if result is None:
+            return False
+        self._set_beamline(result[0], path, result[1])
+        self.undo.resetClean()  # differs from the file on disk until saved
+        self.statusBar().showMessage(f"Opened the version of {history.version_time(version)}", 6000)
+        return True
+
+    def history_dialog(self) -> None:
+        if not self.path or not history.versions(self.path):
+            QMessageBox.information(self, "History", "No saved versions of this file yet.\n"
+                                    "A copy is kept every time you save.")
+            return
+        history.HistoryDialog(self, self.path).exec()
 
     def glue_dialog(self) -> None:
         if not self.maybe_discard():
@@ -422,40 +481,97 @@ class MainWindow(QMainWindow):
         self._set_beamline(bl, path, warnings + glue_warnings)
         self.statusBar().showMessage(f"Glued {len(parts)} files, {len(bl.elements)} elements", 6000)
 
-    def _save(self, title: str, ext: str, writer) -> None:
+    def _commit_pending_edits(self) -> None:
+        """Apply a name or value still being typed: panels and table cells apply it when they lose focus."""
+        w = QApplication.focusWidget()
+        if w is not None:
+            w.clearFocus()
+
+    def save(self) -> None:
+        """Save to the open file in its own format; ask for a file when there is none yet."""
         if self.bl is None:
             return
-        base = os.path.splitext(self.path)[0] if self.path else "layout"
-        path, _ = QFileDialog.getSaveFileName(self, title, base + ext, f"*{ext};;All files (*)")
-        if not path:
+        self._commit_pending_edits()
+        fmt = file_format(self.path)
+        if not fmt:
+            self.save_survey()
+        else:
+            self._write(self.path, write_json if fmt == "json" else write_survey, "Save")
+
+    def _save(self, title: str, fmt: str, writer) -> None:
+        if self.bl is None:
             return
+        self._commit_pending_edits()
+        ext, filt = (".json", "JSON (*.json)") if fmt == "json" else (".txt", "Survey (*.txt *.tfs)")
+        if file_format(self.path) == fmt:
+            default = self.path  # same format: keep the name and extension (e.g. .tfs)
+        else:
+            default = (os.path.splitext(self.path)[0] if self.path else "layout") + ext
+        path, _ = QFileDialog.getSaveFileName(self, title, default, f"{filt};;All files (*)")
+        if path:
+            self._write(path, writer, title)
+
+    def _write(self, path: str, writer, title: str) -> None:
+        try:
+            history.before_save(path)
+        except OSError as err:
+            self.statusBar().showMessage(f"Could not keep the previous version: {err}", 6000)
         try:
             writer(self.bl, path)
         except OSError as err:
             QMessageBox.critical(self, title, str(err))
             return
+        try:
+            history.after_save(path)
+        except OSError as err:
+            QMessageBox.warning(self, title, f"Saved, but the copy for the history failed:\n{err}")
         self.path = path
         self.undo.setClean()
         self.refresh()
         self.statusBar().showMessage(f"Saved {os.path.basename(path)}", 4000)
 
     def save_survey(self) -> None:
-        self._save("Save survey", ".txt", write_survey)
+        self._save("Save survey", "survey", write_survey)
 
     def save_json(self) -> None:
-        self._save("Save JSON", ".json", write_json)
+        self._save("Save JSON", "json", write_json)
 
     def closeEvent(self, event) -> None:
         if self.maybe_discard():
             event.accept()
+            self.autosave_timer.stop()
+            self.autosave.release()
+            if self in WINDOWS:
+                WINDOWS.remove(self)
         else:
             event.ignore()
 
+    # ------------------------------------------------------------ autosave and recovery
+    def write_autosave(self) -> None:
+        """Keep the unsaved work on disk so it can be recovered if the editor crashes."""
+        try:
+            if self.bl is None or self.undo.isClean():
+                self.autosave.clear()
+            else:
+                self.autosave.write({"path": self.path, "time": time.time(), "beamline": self.bl,
+                                     "measures": list(self.canvas.measures)})
+        except Exception as err:  # the autosave must never break the editor
+            self.statusBar().showMessage(f"Autosave failed: {err}", 6000)
+
+    def restore(self, state: dict) -> None:
+        """Load recovered unsaved work."""
+        self._set_beamline(state["beamline"], state.get("path", ""), [])
+        self.canvas.measures = list(state.get("measures", []))
+        self.canvas.rebuild()
+        self.undo.resetClean()  # unsaved
+        self.write_autosave()
+        self.statusBar().showMessage("Recovered unsaved work: save it to keep it", 10000)
+
     # ------------------------------------------------------------ element actions
-    def _drag_finished(self, root: int, delta: float) -> None:
+    def _drag_finished(self, root: int, delta: float, mode: str) -> None:
         x = self.bl.elements[root]
         target = x.s_center + delta
-        self.apply("Drag", lambda bl: bl.set_position(root, target, "center"))
+        self.apply("Drag", lambda bl: bl.set_position(root, target, "center", mode))
 
     def insert_element(self) -> None:
         if self.bl is None:
@@ -512,11 +628,55 @@ class MainWindow(QMainWindow):
             self.issue_list.item(self.issue_list.count() - 1).setData(Qt.ItemDataRole.UserRole, s.index)
 
 
+_error_shown = 0.0
+
+
+def on_error(text: str) -> None:
+    """Unhandled exception: autosave every window at once, then tell the user (at most every 10 s)."""
+    global _error_shown
+    for win in WINDOWS:
+        win.write_autosave()
+    if time.time() - _error_shown < 10 or not WINDOWS:
+        return
+    _error_shown = time.time()
+    last = text.strip().splitlines()[-1]
+    QTimer.singleShot(0, lambda: QMessageBox.warning(
+        WINDOWS[0] if WINDOWS else None, "Internal error",
+        f"An internal error occurred and the last action may not have been applied:\n\n{last}\n\n"
+        f"The editor keeps running and your unsaved work was autosaved. "
+        f"Details are in {recovery.LOG_PATH}"))
+
+
+def recover(first: MainWindow) -> bool:
+    """Offer the work of editors that did not close normally. Returns whether any was recovered."""
+    used = False
+    for orphan in recovery.find_orphans():
+        state = orphan.state
+        name = os.path.basename(state.get("path", "")) or "untitled"
+        when = time.strftime("%Y-%m-%d %H:%M", time.localtime(orphan.time))
+        answer = QMessageBox.question(
+            first, "Recover unsaved work",
+            f"The editor did not close normally and left unsaved work on {name} (autosaved {when}).\n\n"
+            "Recover it?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Discard)
+        if answer == QMessageBox.StandardButton.Yes:
+            win = first if not used else MainWindow()
+            win.show()
+            win.restore(state)
+            used = True
+        orphan.discard()
+    return used
+
+
 def main() -> None:
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+    recovery.install_error_handlers(on_error)
     win = MainWindow()
     win.show()
+    if recover(win) and len(sys.argv) > 1:
+        win = MainWindow()  # the files from the command line open in their own window
+        win.show()
     if len(sys.argv) > 2:
         win.load_glued(sys.argv[1:])
     elif len(sys.argv) > 1:

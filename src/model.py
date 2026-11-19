@@ -9,6 +9,7 @@ import element_types as et
 from geometry import Geometry
 
 TOL = 1e-9  # m
+POINT_FRACTION = {"start": 0.0, "center": 0.5, "end": 1.0}  # position of a measure point along its element
 
 
 class EditError(Exception):
@@ -429,17 +430,20 @@ class Beamline:
             self._move_edges(i, delta, delta)
 
     @_edit
-    def shift(self, i: int, delta: float) -> None:
-        """Move the block of i and everything downstream by delta.
+    def shift(self, i: int, delta: float, upstream: bool = False) -> None:
+        """Move the block of i and everything downstream (or upstream) of it by delta.
 
-        The upstream drift absorbs the change; if it is too short the block overlaps what is upstream.
+        The drift on the other side absorbs the change; if it is too short the block overlaps what is there.
         """
         e = self.elements
-        lo, _hi, root = self.block(i)
+        lo, hi, root = self.block(i)
         self._check_movable(root)
         if self.is_floating(root):
             raise EditError("Floating point: set its position instead")
         if not delta:
+            return
+        if upstream:
+            self._shift_upstream(hi, root, delta)
             return
         u = self._neighbour(lo, -1)
         for k in range(0 if u is None else u + 1, len(e)):
@@ -460,17 +464,39 @@ class Beamline:
                 e.insert(u + 1, Element(self._new_drift_name(self._drift_prefix(x)), "DRIFT", "drift",
                                         e[lo].s_start, gap, extra=dict(x.extra)))
 
+    def _shift_upstream(self, hi: int, root: int, delta: float) -> None:
+        """Mirror of shift: the block ending at hi and everything upstream move, the downstream drift absorbs."""
+        e = self.elements
+        d = self._neighbour(hi, 1)
+        for k in range(len(e) if d is None else d):
+            e[k].s_end += delta
+        if d is None:
+            return
+        if e[d].is_gap_drift:
+            if e[d].length - delta >= -TOL:
+                e[d].length = max(e[d].length - delta, 0.0)
+            else:
+                self._removed[e[d].name] = e[d]
+                del e[d]  # fully covered by the block
+        else:
+            gap = e[d].s_start - e[hi].s_end
+            if gap > TOL:
+                x = e[root]
+                e.insert(d, Element(self._new_drift_name(self._drift_prefix(x)), "DRIFT", "drift",
+                                    e[d].s_start, gap, extra=dict(x.extra)))
+
     @_edit
     def set_length(self, i: int, new_length: float, anchor: str = "center") -> None:
         if new_length < 0:
             raise EditError("Negative length")
         if self.owner(i) is not None:
             raise EditError("Attached element: edit its parent")
-        delta = new_length - self.elements[i].length
+        x = self.elements[i]
+        delta = new_length - x.length
         d_start, d_end = {"start": (0.0, delta), "end": (-delta, 0.0),
                           "center": (-delta / 2, delta / 2)}[anchor]
         self._move_edges(i, d_start, d_end)
-        self.elements[i].length = new_length  # exact value
+        x.length = new_length  # exact value (x may have moved in the list)
 
     @_edit
     def set_position(self, i: int, value: float, ref: str = "center", mode: str = "move") -> None:
@@ -523,9 +549,48 @@ class Beamline:
         if moving == "B":
             (self.shift if mode == "shift" else self.move)(d["b"], delta)
         elif mode == "shift":
-            raise EditError("Shift only when B moves")
+            self.shift(d["a"], -delta, upstream=True)
         else:
             self.move(d["a"], -delta)
+
+    def point_s(self, ref: tuple[str, str]) -> float:
+        """Position of a point (element name, "start" | "center" | "end"). Raises KeyError if missing."""
+        x = self.elements[self.find(ref[0])]
+        return x.s_start + POINT_FRACTION[ref[1]] * x.length
+
+    @_edit
+    def set_point_distance(self, a: tuple[str, str], b: tuple[str, str], value: float,
+                           moving: str = "B", mode: str = "move") -> None:
+        """Set the distance between two points by moving the element of one of them.
+
+        A is the upstream point. Mode "shift" also moves everything beyond the moving element (downstream
+        of B, or upstream of A). Two points of the same element change its length instead, keeping the
+        fixed point in place.
+        """
+        if value < 0:
+            raise EditError("Negative distance")
+        if a == b:
+            raise EditError("Both ends are the same point")
+        try:
+            sa, sb = self.point_s(a), self.point_s(b)
+        except KeyError as err:
+            raise EditError(f"Element {err} not found") from None
+        if sb < sa:
+            a, b, sa, sb = b, a, sb, sa
+        mover, fixed = (b, a) if moving == "B" else (a, b)
+        i = self.find(mover[0])
+        if mover[0] == fixed[0]:
+            self.set_length(i, value / abs(POINT_FRACTION[b[1]] - POINT_FRACTION[a[1]]), fixed[1])
+        else:
+            delta = value - (sb - sa)
+            if moving == "A":
+                delta = -delta
+            if mode == "shift":
+                self.shift(i, delta, upstream=moving == "A")
+            else:
+                self.set_position(i, self.elements[i].s_center + delta, "center")
+        if abs(self.point_s(b) - self.point_s(a) - value) > 1e-7:
+            raise EditError(f"{mover[0]} and {fixed[0]} move together: cannot change this distance")
 
     @_edit
     def insert(self, element: Element) -> int:

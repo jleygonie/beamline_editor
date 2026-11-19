@@ -70,9 +70,11 @@ class MeasureBox(QGraphicsItem):
 
 class Canvas(QGraphicsView):
     selectionChanged = pyqtSignal(list)  # element indices
-    dragFinished = pyqtSignal(int, float)  # block root index, delta (m)
+    dragFinished = pyqtSignal(int, float, str)  # block root index, delta (m), mode ("move" | "shift")
     message = pyqtSignal(str)
     measureModeExited = pyqtSignal()
+    measureSelected = pyqtSignal(object)  # index in measures, or None
+    measureEditRequested = pyqtSignal(int)  # double-click on a measurement
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -91,7 +93,8 @@ class Canvas(QGraphicsView):
         # vertically centred
         self._press = None  # (button, view pos, hit, scroll x)
         self._mode = ""  # "", "pan", "drag"
-        self._drag: tuple[int, float] | None = None  # root, delta
+        self._drag_mode = "move"  # "shift" when Shift is held at the press: the rest of the line follows
+        self._drag: tuple[int, float, str] | None = None  # root, delta, mode
         self.flipped = False  # s increasing to the left
         self.measure_mode = False
         self.measures: list[tuple[PointRef, PointRef]] = []
@@ -156,14 +159,26 @@ class Canvas(QGraphicsView):
             self.message.emit("Measure: click two highlighted points (Esc to cancel)")
 
     def clear_measures(self) -> None:
-        self.measures, self.selected_measure, self._pick = [], None, None
+        self.measures, self._pick = [], None
+        self._set_measure_selection(None)
         self.rebuild()
+
+    def _set_measure_selection(self, k: int | None) -> None:
+        if k != self.selected_measure:
+            self.selected_measure = k
+            self.measureSelected.emit(k)
+
+    def deselect_measure(self) -> None:
+        if self.selected_measure is not None:
+            self._set_measure_selection(None)
+            self.rebuild()
 
     def delete_selected_measure(self) -> bool:
         if self.selected_measure is None or self.selected_measure >= len(self.measures):
             return False
         del self.measures[self.selected_measure]
         self.selected_measure = None
+        self.measureSelected.emit(None)
         self.rebuild()
         return True
 
@@ -422,7 +437,8 @@ class Canvas(QGraphicsView):
             pen = self._pen(2 if sel else 1, color)
             ext = self._pen(1, color if sel else QColor(140, 140, 140), Qt.PenStyle.DashLine)
             a, b = self.measures[k]
-            tip = f"{self._point_text(a)} → {self._point_text(b)}\n{text}\nClick to select, Delete to remove"
+            tip = f"{self._point_text(a)} → {self._point_text(b)}\n{text}\n" \
+                   "Click to select (edit the distance in the panel), double-click to edit, Delete to remove"
             s0, s1, pt = x0 / 1000, x1 / 1000, self._pt
             parts = [scene.addLine(QLineF(pt(s0), pt(s0, y - 6)), ext), scene.addLine(QLineF(pt(s1), pt(s1, y - 6)), ext),
                      scene.addPath(self._along(s0, s1, y), pen),
@@ -459,10 +475,10 @@ class Canvas(QGraphicsView):
 
     def _select_measure(self, k: int | None) -> None:
         if k != self.selected_measure:
-            self.selected_measure = k
+            self._set_measure_selection(k)
             self.rebuild()
         if k is not None:
-            self.message.emit("Measurement selected: press Delete to remove it")
+            self.message.emit("Measurement selected: edit its distance in the panel, or press Delete to remove it")
 
     def _pick_point(self, ref: PointRef) -> None:
         if self._pick is None or self._point_s(self._pick) is None:
@@ -475,7 +491,7 @@ class Canvas(QGraphicsView):
             self.measures.append((self._pick, ref))
             self.message.emit(f"{self._point_text(self._pick)} → {self._point_text(ref)}: {fmt_len(d, self.unit)}")
             self._pick = None
-        self.selected_measure = None
+        self._set_measure_selection(None)
         self.rebuild()
 
     def keyPressEvent(self, event) -> None:
@@ -648,6 +664,8 @@ class Canvas(QGraphicsView):
         self._press, self._mode = None, ""
         if left and (k := self._hit_measure(pos)) is not None:
             self._select_measure(k)
+            if event.type() == event.Type.MouseButtonDblClick:
+                self.measureEditRequested.emit(k)
             return
         if left and self.selected_measure is not None:
             self._select_measure(None)
@@ -656,6 +674,7 @@ class Canvas(QGraphicsView):
             return
         hit = self.hit(pos) if left and not self.measure_mode else None
         self._press = (btn, pos, hit, self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+        self._drag_mode = "shift" if event.modifiers() & Qt.KeyboardModifier.ShiftModifier else "move"
         self._press_geo = self.geo  # the geometry changes while a bend is dragged
         if hit is not None:
             if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
@@ -719,10 +738,11 @@ class Canvas(QGraphicsView):
         _lo, _hi, root = bl.block(i)
         x = bl.elements[root]
         delta = round((x.s_start + dx_scene / 1000) / SNAP) * SNAP - x.s_start
-        self._drag = (root, delta)
+        mode = self._drag_mode
+        self._drag = (root, delta, mode)
         trial = copy.deepcopy(bl)
         try:
-            trial.set_position(root, x.s_center + delta, "center")
+            trial.set_position(root, x.s_center + delta, "center", mode)
         except EditError as err:
             self.message.emit(str(err))
             return
@@ -730,7 +750,8 @@ class Canvas(QGraphicsView):
         self.rebuild()
         up, down = trial.neighbours(root)
         y = trial.elements[root]
-        parts = [f"Δ {fmt_len(delta, self.unit)}"]
+        parts = [f"Δ {fmt_len(delta, self.unit)}",
+                 "pushing the rest of the line" if mode == "shift" else "(hold Shift to push the rest of the line)"]
         if up is not None:
             parts.append(f"up gap {fmt_len(y.s_start - trial.elements[up].s_end, self.unit)}")
         if down is not None:
